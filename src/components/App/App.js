@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { getUrls, postUrl } from '../../apiCalls';
+import { getUrls, postUrl, deleteUrl } from '../../apiCalls';
 import UrlContainer from '../UrlContainer/UrlContainer';
 import UrlForm from '../UrlForm/UrlForm';
 
@@ -40,6 +40,18 @@ export class App extends Component {
         })
   }
 
+  removeUrl = (id) => {
+    const filteredUrls = this.state.urls.filter(url => url.id !== parseInt(id))
+    deleteUrl(id)
+      .then(results => {
+        if (results !== 'success!') {
+          this.setState({errorMsg: results}) 
+        } else {
+          this.setState({  urls: filteredUrls })
+        }
+        })
+  }
+
   render() {
 
     return (
@@ -49,7 +61,7 @@ export class App extends Component {
           <UrlForm addUrl={this.addUrl} />
         </header>
 
-        <UrlContainer urls={this.state.urls} errorMsg={this.state.errorMsg} />
+        <UrlContainer urls={this.state.urls} errorMsg={this.state.errorMsg} removeUrl={this.removeUrl} />
       </main>
     );
   }
