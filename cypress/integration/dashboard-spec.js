@@ -73,7 +73,7 @@ describe('URL Shortener 404 Error on POST', () => {
 
         cy.visit('http://localhost:3000/')
     })
-    it.only('Should display an error message if the POST call doesn\'t work', () => {
+    it('Should display an error message if the POST call doesn\'t work', () => {
         cy.get('input').eq(0).type('Between Days')
         cy.get('input').eq(1).type('https://www.youtube.com/watch?v=qm0ru2iBuB0&list=RDEMqribv0Mn5Pp2PPKhIenVuQ&index=28')
         cy.get('button').click()
