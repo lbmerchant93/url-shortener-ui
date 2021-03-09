@@ -21,10 +21,5 @@
             "id":4,
             "short_url":"http://localhost:3001/useshorturl/4"
         }
-    ],
-
-    "postUrl": {
-        "title":"Between Days",
-        "long_url":"https://www.youtube.com/watch?v=qm0ru2iBuB0&list=RDEMqribv0Mn5Pp2PPKhIenVuQ&index=28"
-    }
+    ]
 }
