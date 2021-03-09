@@ -23,7 +23,7 @@ class UrlForm extends Component {
   }
 
   clearInputs = () => {
-    this.setState({title: '', urlToShorten: ''});
+    this.setState({title: '', long_url: ''});
   }
 
   render() {

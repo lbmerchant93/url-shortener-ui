@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { getUrls } from '../../apiCalls';
+import { getUrls, postUrl } from '../../apiCalls';
 import UrlContainer from '../UrlContainer/UrlContainer';
 import UrlForm from '../UrlForm/UrlForm';
 
@@ -8,14 +8,19 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      urls: []
+      urls: [],
+      errorMsg: ''
     }
   }
 
   componentDidMount() {
     getUrls()
       .then(results => {
-        this.setState({ urls: results.urls})
+        if (typeof results === 'string') {
+          this.setState({errorMsg: results}) 
+        } else {
+          this.setState({ urls: results.urls})
+        }
       })
   }
 
@@ -25,10 +30,14 @@ export class App extends Component {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({...newUrl})
     }
-    fetch('http://localhost:3001/api/v1/urls', post)
-      .then(res => res.json())
-      .then(results => this.setState({
-        urls: [...this.state.urls, results] }))
+    postUrl(post)
+      .then(results => {
+        if (typeof results === 'string') {
+          this.setState({errorMsg: results}) 
+        } else {
+          this.setState({  urls: [...this.state.urls, results] })
+        }
+        })
   }
 
   render() {
@@ -40,7 +49,7 @@ export class App extends Component {
           <UrlForm addUrl={this.addUrl} />
         </header>
 
-        <UrlContainer urls={this.state.urls}/>
+        <UrlContainer urls={this.state.urls} errorMsg={this.state.errorMsg} />
       </main>
     );
   }
