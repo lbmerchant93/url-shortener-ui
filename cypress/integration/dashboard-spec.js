@@ -92,7 +92,7 @@ describe('URL Shortener 404 Error on POST', () => {
     })
 })
 
-describe('URL Shortener', () => {
+describe('URL Shortener Delete Functionality', () => {
     beforeEach(() => {
         cy.fixture('testUrls.json')
         .then(urls => {
@@ -119,11 +119,49 @@ describe('URL Shortener', () => {
 
         cy.visit('http://localhost:3000/')
     })
-    it.only('Should delete an url card', () => {
+
+    it('Should delete an url card', () => {
         cy.get('input').eq(0).type('Between Days')
         cy.get('input').eq(1).type('https://www.youtube.com/watch?v=qm0ru2iBuB0&list=RDEMqribv0Mn5Pp2PPKhIenVuQ&index=28')
         cy.get('button').eq(0).click()
         cy.get('.delete').eq(4).click()
         cy.get('.url').should('have.length', '4')
+    })
+})
+
+describe('URL Shortener Delete Error', () => {
+    beforeEach(() => {
+        cy.fixture('testUrls.json')
+        .then(urls => {
+            cy.intercept('GET', 'http://localhost:3001/api/v1/urls', {
+            body: urls
+            })
+        })
+        cy.fixture('testUrls.json')
+        .then(data => {
+            cy.intercept('POST', 'http://localhost:3001/api/v1/urls', {
+            body: data.postUrl,
+            headers: {'Content-Type': 'application/json'},
+            })
+        })
+        cy.fixture('testUrls.json')
+        .then(response => {
+            cy.intercept('DELETE', 'http://localhost:3001/api/v1/urls/5', {
+            statusCode: 404,
+            headers: {
+                'Content-type': 'application/json'
+                },
+            })
+        })
+
+        cy.visit('http://localhost:3000/')
+    })
+    
+    it('Should display an error message when there is an error with the DELETE Fetch call', () => {
+        cy.get('input').eq(0).type('Between Days')
+        cy.get('input').eq(1).type('https://www.youtube.com/watch?v=qm0ru2iBuB0&list=RDEMqribv0Mn5Pp2PPKhIenVuQ&index=28')
+        cy.get('button').eq(0).click()
+        cy.get('.delete').eq(4).click()
+        cy.get('p').eq(0).contains('404 error. Sorry! Something went wrong with your Delete! Try again later!')
     })
 })
