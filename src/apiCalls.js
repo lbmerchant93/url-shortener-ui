@@ -2,7 +2,7 @@ export const getUrls = () => {
   return fetch('http://localhost:3001/api/v1/urls')
   .then(res => {
     if (!res.ok) {
-        return `${res.status} error. Sorry! Something went wrong! Try again later!`
+        return `${res.status} error. Sorry! Something went wrong retrieving all the urls! Try again later!`
     } else {
         return res.json()
     }})

@@ -39,3 +39,20 @@ describe('URL Shortener', () => {
     })
 
 })
+
+describe('URL Shortener 404 Error', () => {
+    beforeEach(() => {
+        cy.fixture('testUrls.json')
+        .then(urls => {
+            cy.intercept('GET', 'http://localhost:3001/api/v1/urls', {
+            statusCode: 404
+            })
+        })
+        cy.visit('http://localhost:3000/')
+    })
+
+    it('Should display an error message if the GET call for all urls doesn\'t work', () => {
+        cy.get('p').eq(0).contains('404 error. Sorry! Something went wrong retrieving all the urls! Try again later!')
+    })
+})
+
