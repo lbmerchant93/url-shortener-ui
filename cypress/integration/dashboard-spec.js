@@ -40,7 +40,7 @@ describe('URL Shortener', () => {
 
 })
 
-describe('URL Shortener 404 Error', () => {
+describe('URL Shortener 404 Error on GET', () => {
     beforeEach(() => {
         cy.fixture('testUrls.json')
         .then(urls => {
@@ -56,3 +56,27 @@ describe('URL Shortener 404 Error', () => {
     })
 })
 
+describe('URL Shortener 404 Error on POST', () => {
+    beforeEach(() => {
+        cy.fixture('testUrls.json')
+        .then(urls => {
+            cy.intercept('GET', 'http://localhost:3001/api/v1/urls', {
+            body: urls
+            })
+        })
+        cy.fixture('testUrls.json')
+        .then(data => {
+            cy.intercept('POST', 'http://localhost:3001/api/v1/urls', {
+            statusCode: 404
+            })
+        })
+
+        cy.visit('http://localhost:3000/')
+    })
+    it.only('Should display an error message if the POST call doesn\'t work', () => {
+        cy.get('input').eq(0).type('Between Days')
+        cy.get('input').eq(1).type('https://www.youtube.com/watch?v=qm0ru2iBuB0&list=RDEMqribv0Mn5Pp2PPKhIenVuQ&index=28')
+        cy.get('button').click()
+        cy.get('p').eq(0).contains('404 error. Sorry! Something went wrong with your POST! Try again later!')
+    })
+})
